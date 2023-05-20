@@ -4,8 +4,7 @@ public class Mercancia
 {
     public int MercanciaId { get; set; }
     public string MercanciaName { get; set; } = null!;
-    public string MercanciaDescription { get;set; } = null!;
-        
+    public string MercanciaDescription { get;set; } = null!;       
 }
 
 public class Empleado{
