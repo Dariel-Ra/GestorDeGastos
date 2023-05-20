@@ -11,6 +11,7 @@ public class Mercancia
 public class Empleado{
     public int EmpleadoId {get; set; }
     public string NombreCompleto { get; set; } = null!;
+    public bool Estado { get; set; }
 
 }
 
