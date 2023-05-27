@@ -1,0 +1,61 @@
+@page "/users/crear"
+@page "/users/editar/{Id:int}"
+<EditForm Model="@Usuario" OnValidSubmit="Send">
+<h1>@Titulo</h1>
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <div class="form-group">
+        <div class="row g3">
+            <div class="col-md-6 col-lg-6">
+                <label>Nombre</label>
+                <InputText class="form-control" @bind-Value="Usuario.Nombre"></InputText>
+            </div>
+            <div class="col-md-6 col-lg-6">
+                <label>Nickname</label>
+                <InputText class="form-control" @bind-Value="Usuario.Apellido"></InputText>
+            </div>
+            <div class="col-md-6 col-lg-6">
+                <label>Password</label>
+                <InputText class="form-control" @bind-Value="Usuario.Password"></InputText>
+            </div>
+        </div>
+    </div>
+    
+    
+    <button type="submit" class="mt-2 btn btn-success">Ok</button>
+</EditForm>
+
+@code
+{
+[Parameter]
+public int Id { get; set; } = 0;
+
+
+public string Titulo => Id>0? "Editar rol":"Crear usuario";
+
+public UsuarioRequestUpdate Usuario { get; set; } = new UsuarioRequestUpdate();
+
+protected override async Task OnInitializedAsync()
+{
+    if(Id!=0){
+        var resultado = await usuariosManager.GetByIdAsync(Id);
+        if(resultado.Succeeded){
+            Usuario.UsuarioId = resultado.Data.UsuarioId;
+            Usuario.Nombre = resultado.Data.Nombre;
+            Usuario.Apellido = resultado.Data.Apellido;
+            Usuario.Password = resultado.Data.Password;
+            StateHasChanged();
+        }
+    }
+}
+        
+public async void Send()
+{
+    var resultado = await usuariosManager.CreateAsync(Usuario);
+
+    if(resultado.Succeeded) urlHelper.NavigateTo("/users");
+
+}
+
+}
+

@@ -43,6 +43,7 @@ public class NominaResponse
 public class GastoGeneralesResponse
 {
     public int GastoGeneralesId { get; set; }
+    public DateTime Fecha { get; set; }
     public NominaResponse Nomina { get; set; } = null!;
     public GastosMercanciaResponse GastoMercancia { get; set; } = null!;
     public GastosProveedorResponse GastoProveedor { get; set; } = null!;
@@ -52,6 +53,7 @@ public class GastoGeneralesResponse
 public class GastosMiscelaneoResponse
 {
     public int GastosMiscelaneoId { get; set; }
+    public DateTime Fecha { get; set; }
     public string Descripcion { get; set; } = null!;
     public int Cantidad { get; set; }
 }
@@ -59,13 +61,28 @@ public class GastosMiscelaneoResponse
 public class GastosProveedorResponse
 {
     public int GastosProveedorId { get; set; }
+    public DateTime Fecha { get; set; }
     public string Descripcion { get; set; } = null!;
     public decimal Gastos { get; set; }
 }
 
 public class GastosMercanciaResponse
 {
+    public GastosMercanciaResponse()
+    {
+    }
+
+    public GastosMercanciaResponse(int gastosMercanciaId, DateTime fecha, int cantidad, string descripcion, MercanciaResponse mercancia)
+    {
+        GastosMercanciaId = gastosMercanciaId;
+        Fecha = fecha;
+        Cantidad = cantidad;
+        Descripcion = descripcion;
+        Mercancia = mercancia;
+    }
+
     public int GastosMercanciaId { get; set; }
+    public DateTime Fecha { get; set; }
     public int Cantidad { get; set; }
     public string Descripcion { get; set; } = null!;
     public virtual MercanciaResponse Mercancia { get; set; } = null!;

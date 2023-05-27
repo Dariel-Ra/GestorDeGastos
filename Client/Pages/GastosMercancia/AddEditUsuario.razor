@@ -1,0 +1,82 @@
+@page "/gastosmercancias/crear"
+@page "/gastosmercancias/editar/{Id:int}"
+<EditForm Model="@GastosMercancia" OnValidSubmit="Send">
+<h1>@Titulo</h1>
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <div class="form-group">
+        <div class="row g3">
+            <div class="col-md-4 col-lg-4">
+                <label>Mercancia</label>
+                <InputSelect @bind-Value="@GastosMercancia.MercanciaId" class="form-select" id="validationDefault01">
+                <option selected value="">Elegir...</option>
+                @if(Mercancias!=null){
+                    @foreach (var mercancia in Mercancias)
+                    {
+                        <option selected  value="@mercancia.MercanciaId">@mercancia.MercanciaNombre</option>
+                    }
+                    
+                }
+                </InputSelect>
+            </div>
+            <div class=" col-md-3 col-lg-1">
+                <label for="">Cantidad</label>
+                <InputNumber class="form-control" @bind-Value="@GastosMercancia.Cantidad"></InputNumber>
+            </div>
+
+            <div class="col-md-4 col-lg-2">
+                <label>Fecha</label>
+                <InputDate class="form-control" @bind-Value="GastosMercancia.Fecha"></InputDate>
+            </div>
+
+            <div class="col-md-12 col-lg-12">
+                <label>Descricción</label>
+                <InputTextArea class="form-control" @bind-Value="GastosMercancia.Descricción"></InputTextArea>
+            </div>
+        </div>
+    </div>
+    
+    
+    <button type="submit" class="mt-2 btn btn-success">Ok</button>
+</EditForm>
+
+@code
+{
+[Parameter]
+public int Id { get; set; } = 0;
+
+private DateTime currentTime = DateTime.Now;
+public string Titulo => Id>0? "Editar rol":"Crear usuario";
+
+public GastosMercanciaRequestUpdate GastosMercancia { get; set; } = new GastosMercanciaRequestUpdate();
+public List<MercanciaResponse>? Mercancias { get; set; } = new List<MercanciaResponse>();
+
+protected override async Task OnInitializedAsync()
+{
+    var response = await mercanciasManager.GetAsync();
+    if(response.Succeeded){
+        Mercancias = response.Items.ToList();
+    }
+    if(Id!=0){
+        var resultado = await gastosmercanciasManager.GetByIdAsync(Id);
+        if(resultado.Succeeded){
+            GastosMercancia.GastosMercanciaId = resultado.Data.GastosMercanciaId;
+            GastosMercancia.Fecha = resultado.Data.Fecha;
+            GastosMercancia.Descricción = resultado.Data.Descripcion;
+            GastosMercancia.Cantidad = resultado.Data.Cantidad;
+            GastosMercancia.MercanciaId = resultado.Data.Mercancia.MercanciaId;
+            StateHasChanged();
+        }
+    }
+}
+        
+public async void Send()
+{
+    var resultado = await gastosmercanciasManager.CreateAsync(GastosMercancia);
+
+    if(resultado.Succeeded) urlHelper.NavigateTo("/gastosmercancias");
+
+}
+
+}
+

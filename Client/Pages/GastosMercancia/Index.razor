@@ -1,0 +1,68 @@
+@page "/gastosmercancias"
+<h1>Gastos Mercancias</h1>
+<button class="btn btn-outline-primary" @onclick="Agregar">Agregar</button>
+@if(GastosMercancias != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Fecha</th>
+                <th>Mercancias</th>
+                <th>Cantidad</th>
+                <th>Descricción</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var gastos in GastosMercancias){
+            <tr>
+                <td>@gastos.GastosMercanciaId</td>
+                <td>@gastos.Fecha.ToString("MM/dd/yyyy")</td>
+                <td>@gastos.Mercancia.MercanciaNombre</td>
+                <td>@gastos.Cantidad</td>
+                <td>@gastos.Descripcion</td>
+                <td>
+                    <div class="btn-group">
+                        <button class="btn btn-warning" @onclick="()=>Editar(gastos.GastosMercanciaId)">
+
+                            <span class="oi oi-pencil"></span>
+                        </button>
+                        <button class="btn btn-danger">
+                            <span class="oi oi-trash"></span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Cargando..</p>
+}
+
+@code
+{
+    public List<GastosMercanciaResponse>? GastosMercancias { get; set; }
+    public List<MercanciaResponse>? Mercancias { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await gastosmercanciasManager.GetAsync();
+        if(response.Succeeded){
+            GastosMercancias = response.Items.ToList();
+        }
+    }
+
+    public void Agregar()
+    {
+        urlHelper.NavigateTo("/gastosmercancias/crear",false);
+    }
+    public void Editar(int Id)
+    {
+        urlHelper.NavigateTo($"/gastosmercancias/editar/{Id}",false);
+    }
+}
+
+

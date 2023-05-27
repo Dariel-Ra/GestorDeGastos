@@ -1,0 +1,56 @@
+@page "/mercancias/crear"
+@page "/mercancias/editar/{Id:int}"
+<EditForm Model="@Usuario" OnValidSubmit="Send">
+<h1>@Titulo</h1>
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <div class="form-group">
+        <div class="row g3">
+            <div class="col-md-6 col-lg-6">
+                <label>Nombre</label>
+                <InputText class="form-control" @bind-Value="Usuario.MercanciaNombre"></InputText>
+            </div>
+            <div class="col-md-6 col-lg-6">
+                <label>Nickname</label>
+                <InputTextArea class="form-control" @bind-Value="Usuario.MercanciaDescripcion"></InputTextArea>
+            </div>
+        </div>
+    </div>
+    
+    
+    <button type="submit" class="mt-2 btn btn-success">Ok</button>
+</EditForm>
+
+@code
+{
+[Parameter]
+public int Id { get; set; } = 0;
+
+
+public string Titulo => Id>0? "Editar rol":"Crear usuario";
+
+public MercanciaRequestUpdate Usuario { get; set; } = new MercanciaRequestUpdate();
+
+protected override async Task OnInitializedAsync()
+{
+    if(Id!=0){
+        var resultado = await mercanciasManager.GetByIdAsync(Id);
+        if(resultado.Succeeded){
+            Usuario.MercanciaId = resultado.Data.MercanciaId;
+            Usuario.MercanciaNombre = resultado.Data.MercanciaNombre;
+            Usuario.MercanciaDescripcion = resultado.Data.MercanciaDescripcion;
+            StateHasChanged();
+        }
+    }
+}
+        
+public async void Send()
+{
+    var resultado = await mercanciasManager.CreateAsync(Usuario);
+
+    if(resultado.Succeeded) urlHelper.NavigateTo("/mercancias");
+
+}
+
+}
+

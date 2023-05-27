@@ -66,9 +66,12 @@ public class GastosProveedorRequest{
 }
 
 public class GastosMercanciaRequest{
-    public int GastosMercanciaId { get; set; }
     public DateTime Fecha { get; set; }
     public int Cantidad { get; set; }
-    public int Descricción { get; set; }
+    public string Descricción { get; set; } = null!;
     public int MercanciaId { get; set; }
+}
+public class GastosMercanciaRequestUpdate : GastosMercanciaRequest
+{
+    public int GastosMercanciaId { get; set; }
 }

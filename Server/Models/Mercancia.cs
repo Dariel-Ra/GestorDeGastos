@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using GestorDeGastos.Shared.Requests;
 using GestorDeGastos.Shared.Response;
 
@@ -43,6 +44,7 @@ public class Nomina{
 public class GastosGenerales{
     [Key]
     public int GastoGeneralesId { get; set; }
+    public DateTime Fecha { get; set; }
     public int Nominaid { get; set; }
     public virtual Nomina Nomina { get; set; } = null!;
     public int GastosMercanciaId { get; set; }
@@ -60,6 +62,7 @@ public class GastosMiscelaneo{
     public string Nombre { get; set; } = null!;
     public string Descricción { get; set; } = null!;
     public int Cantidad { get; set; }
+    
 }
 
 public class GastosProveedor{
@@ -74,10 +77,26 @@ public class GastosProveedor{
 public class GastosMercancia{
     [Key]
     public int GastosMercanciaId { get; set; }
+    [Column(TypeName="Date")]
     public DateTime Fecha { get; set; }
     public int Cantidad { get; set; }
-    public int Descricción { get; set; }
+    public string Descricción { get; set; } = null!;
     public int MercanciaId { get; set; }
     public virtual Mercancia Mercancia { get; set; } = null!;
 
+    public static GastosMercancia Crear(GastosMercanciaRequest request)
+    {
+        return new GastosMercancia(){ 
+             
+            Fecha = request.Fecha,
+            Cantidad = request.Cantidad, 
+            Descricción = request.Descricción,
+            MercanciaId = request.MercanciaId 
+        };
+    }
+
+    public GastosMercanciaResponse ToResponse()
+    {
+        return new GastosMercanciaResponse(GastosMercanciaId, Fecha, Cantidad, Descricción, Mercancia.ToResponse());
+    }
 }

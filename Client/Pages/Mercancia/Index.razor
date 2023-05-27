@@ -1,0 +1,63 @@
+@page "/mercancias"
+<h1>Mercancias</h1>
+<button class="btn btn-outline-primary" @onclick="Agregar">Agregar</button>
+@if(Usuarios != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Descricción</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var usuario in Usuarios){
+            <tr>
+                <td>@usuario.MercanciaId</td>
+                <td>@usuario.MercanciaNombre</td>
+                <td>@usuario.MercanciaDescripcion</td>
+                <td>
+                    <div class="btn-group">
+                        <button class="btn btn-warning" @onclick="()=>Editar(usuario.MercanciaId)">
+
+                            <span class="oi oi-pencil"></span>
+                        </button>
+                        <button class="btn btn-danger">
+                            <span class="oi oi-trash"></span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Cargando..</p>
+}
+
+@code
+{
+    public List<MercanciaResponse>? Usuarios { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await mercanciasManager.GetAsync();
+        if(response.Succeeded){
+            Usuarios = response.Items.ToList();
+        }
+    }
+
+    public void Agregar()
+    {
+        urlHelper.NavigateTo("/mercancias/crear",false);
+    }
+    public void Editar(int Id)
+    {
+        urlHelper.NavigateTo($"/mercancias/editar/{Id}",false);
+    }
+}
+
+
